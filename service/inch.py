@@ -117,6 +117,9 @@ class InchService:
                     self.back_data[f"{to}_{from_}"] = {"okx": okx_return_from[0].get("asks")[0][0]}
                 print(okx_data_from)
             if x%50 == 0:
-                with open(f"{getcwd()}/load/{datetime.now()}.json", "w") as fp:
+                with open(f"{getcwd()}/service/load/{datetime.now()}.json", "w") as fp:
                     json.dump(self.back_data, fp)
                 self.back_data = {}
+        with open(f"{getcwd()}/load/{datetime.now()}.json", "w") as fp:
+            json.dump(self.back_data, fp)
+        self.back_data = {}
