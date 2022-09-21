@@ -6,6 +6,7 @@ from .bitrue import BitrueService
 from .okx import OkxService
 import json
 from datetime import datetime
+from os import getcwd
 
 
 class InchService:
@@ -21,8 +22,8 @@ class InchService:
         self.start()
 
     def start(self):
-        x = 0
-        xx = len(self.data)
+        x = 1
+        xx = len(self.data)+1
         for to_key, to_value in self.data.items():
             print(f"{x} из {xx}")
             x += 1
@@ -115,5 +116,7 @@ class InchService:
                 else:
                     self.back_data[f"{to}_{from_}"] = {"okx": okx_return_from[0].get("asks")[0][0]}
                 print(okx_data_from)
-        with open(f"{datetime.now()}.json", "w") as fp:
-            json.dump(self.back_data, fp)
+            if x%50 == 0:
+                with open(f"{getcwd()}/load/{datetime.now()}.json", "w") as fp:
+                    json.dump(self.back_data, fp)
+                self.back_data = {}
