@@ -101,21 +101,24 @@ class InchService:
                 else:
                     self.back_data[f"{to}_{from_}"] = {"bitrue": bitrue_return_from}
                 print(bitrue_data_from)
-
-            okx_data_to = self.okx.start(from_, to)
-            if okx_return_to := okx_data_to.get("data"):
-                if self.back_data.get(f"{from_}_{to}"):
-                    self.back_data[f"{from_}_{to}"].update({"okx": okx_return_to[0].get("asks")[0][0]})
-                else:
-                    self.back_data[f"{from_}_{to}"] = {"okx": okx_return_to[0].get("asks")[0][0]}
-                print(okx_data_to)
-            okx_data_from = self.okx.start(to, from_)
-            if okx_return_from := okx_data_from.get("data"):
-                if self.back_data.get(f"{to}_{from_}"):
-                    self.back_data[f"{to}_{from_}"].update({"okx": okx_return_from[0].get("asks")[0][0]})
-                else:
-                    self.back_data[f"{to}_{from_}"] = {"okx": okx_return_from[0].get("asks")[0][0]}
-                print(okx_data_from)
+            try:
+                okx_data_to = self.okx.start(from_, to)
+                if okx_return_to := okx_data_to.get("data"):
+                    if self.back_data.get(f"{from_}_{to}"):
+                        self.back_data[f"{from_}_{to}"].update({"okx": okx_return_to[0].get("asks")[0][0]})
+                    else:
+                        self.back_data[f"{from_}_{to}"] = {"okx": okx_return_to[0].get("asks")[0][0]}
+                    print(okx_data_to)
+                okx_data_from = self.okx.start(to, from_)
+                if okx_return_from := okx_data_from.get("data"):
+                    if self.back_data.get(f"{to}_{from_}"):
+                        self.back_data[f"{to}_{from_}"].update({"okx": okx_return_from[0].get("asks")[0][0]})
+                    else:
+                        self.back_data[f"{to}_{from_}"] = {"okx": okx_return_from[0].get("asks")[0][0]}
+                    print(okx_data_from)
+            except Exception as e:
+                print(e)
+                pass
             if x%50 == 0:
                 with open(f"{getcwd()}/service/load/{datetime.now()}.json", "w") as fp:
                     json.dump(self.back_data, fp)
