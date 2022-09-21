@@ -2,6 +2,7 @@ from requests import get
 from .mexc import MexcService
 from .kucoin import KucoinService
 from .gate import GateService
+from .bitrue import BitrueService
 
 
 class InchService:
@@ -12,6 +13,7 @@ class InchService:
         self.mexc = MexcService()
         self.kucoin = KucoinService()
         self.gate = GateService()
+        self.bitrue = BitrueService()
         self.start()
 
     def start(self):
@@ -38,8 +40,8 @@ class InchService:
                     self.back_data[f"{to}_{from_}"] = {"mexc": mexc_return.get("asks")[0]["price"]}
                 print(mexc_return)
 
-            mexc_data_from = self.mexc.start(f"{from_}", f"{to}")
-            if mexc_return := mexc_data_from.get("data"):
+            mexc_data_to = self.mexc.start(f"{from_}", f"{to}")
+            if mexc_return := mexc_data_to.get("data"):
                 if self.back_data.get(f"{from_}_{to}"):
                     self.back_data[f"{from_}_{to}"].update({"mexc": mexc_return.get("asks")[0]["price"]})
                 else:
@@ -75,3 +77,18 @@ class InchService:
                 else:
                     self.back_data[f"{from_}_{to}"] = {"gate": gate_return_from[0][0]}
                 print(gate_data_from)
+
+            bitrue_data_to = self.bitrue.start(from_, to)
+            if bitrue_return_to := bitrue_data_to.get("askPrice"):
+                if self.back_data.get(f"{from_}_{to}"):
+                    self.back_data[f"{from_}_{to}"].update({"bitrue": bitrue_return_to})
+                else:
+                    self.back_data[f"{from_}_{to}"] = {"bitrue": bitrue_return_to}
+                print(bitrue_data_to)
+            bitrue_data_from = self.bitrue.start(to, from_)
+            if bitrue_return_from := bitrue_data_from.get("askPrice"):
+                if self.back_data.get(f"{from_}_{to}"):
+                    self.back_data[f"{from_}_{to}"].update({"bitrue": bitrue_return_from})
+                else:
+                    self.back_data[f"{from_}_{to}"] = {"bitrue": bitrue_return_from}
+                print(bitrue_data_from)
